@@ -4,15 +4,15 @@ import pytest
 from data.urls import Urls
 
 class TestCreateCourier:
-    def test_create_new_courier(self, courier_cleanup):
-        payload = courier_cleanup
+    def test_create_new_courier(self, generate_login_data):
+        payload = generate_login_data
         response = requests.post(Urls.CREATE_COURIER_ENDPOINT, json=payload)
 
         assert response.status_code == 201
         assert response.json() == {"ok": True}
 
-    def test_create_two_idential_courier(self, courier_cleanup):
-        payload = courier_cleanup
+    def test_create_two_idential_courier(self, generate_login_data):
+        payload = generate_login_data
         response = requests.post(Urls.CREATE_COURIER_ENDPOINT, json=payload)
 
         assert response.status_code == 201
