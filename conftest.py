@@ -4,28 +4,11 @@ import pytest
 import string
 from data.urls import Urls
 
+# фикстура для удаления курьера
 @pytest.fixture
 def courier_cleanup():
-
-    # метод генерирует строку, состоящую только из букв нижнего регистра, в качестве параметра передаём длину строки
-    def generate_random_string(length):
-        letters = string.ascii_lowercase
-        random_string = ''.join(random.choice(letters) for i in range(length))
-        return random_string
-    
-    # генерируем логин, пароль и имя курьера
-    login = generate_random_string(10)
-    password = generate_random_string(10)
-    first_name = generate_random_string(10)
-
-    # собираем тело запроса
-    payload = {
-        "login": login,
-        "password": password,
-        "firstName": first_name
-    }
+    payload = {}
         
-    
     # Передаем данные в тест
     yield payload
 
@@ -40,4 +23,49 @@ def courier_cleanup():
         # 2. Удаляем курьера по его id
         if courier_id:
             requests.delete(f"{Urls.DELETE_COURIER_ENDPOINT}{courier_id}")
+
+# фикстуры для генерации данных курьера и его удаление
+@pytest.fixture
+def generate_login_data(courier_cleanup):
+    def generate_random_string(length):
+        letters = string.ascii_lowercase
+        random_string = ''.join(random.choice(letters) for i in range(length))
+        return random_string
+
+    # генерируем логин, пароль и имя курьера
+    login = generate_random_string(10)
+    password = generate_random_string(10)
+    first_name = generate_random_string(10)
+    
+    # собираем тело запроса
+    payload = {
+        "login": login,
+        "password": password,
+        "firstName": first_name
+        }
+    
+    courier_cleanup.update(payload)
+
+    return payload
+
+# фикстура для создания курьера и его удаление
+@pytest.fixture
+def register_new_courier_and_return_login_password(generate_login_data, courier_cleanup):
+
+    payload = generate_login_data
+    login_pass = []
+
+    # отправляем запрос на регистрацию курьера и сохраняем ответ в переменную response
+    response = requests.post('https://qa-scooter.education-services.ru/api/v1/courier', data=payload)
+
+    # если регистрация прошла успешно (код ответа 201), добавляем в список логин и пароль курьера
+    if response.status_code == 201:
+        login_pass.append(payload["login"])
+        login_pass.append(payload["password"])
+        login_pass.append(payload["firstName"])
+        
+    
+    courier_cleanup.update(payload)
+
+    return login_pass
     
