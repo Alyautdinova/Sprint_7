@@ -10,4 +10,7 @@ class Urls:
 
     # Эндпоинт для удаления курьера
     DELETE_COURIER_ENDPOINT = BASE_URL + '/api/v1/courier/'
+
+    # Эндпоинт для создания заказа
+    CREATE_ORDER_ENDPOINT = BASE_URL + '/api/v1/orders'
     
