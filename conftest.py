@@ -56,7 +56,7 @@ def register_new_courier_and_return_login_password(generate_login_data, courier_
     login_pass = []
 
     # отправляем запрос на регистрацию курьера и сохраняем ответ в переменную response
-    response = requests.post('https://qa-scooter.education-services.ru/api/v1/courier', data=payload)
+    response = requests.post(Urls.CREATE_COURIER_ENDPOINT, data=payload)
 
     # если регистрация прошла успешно (код ответа 201), добавляем в список логин и пароль курьера
     if response.status_code == 201:
