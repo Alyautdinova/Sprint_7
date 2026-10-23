@@ -50,6 +50,19 @@ def generate_login_data(courier_cleanup):
 
 # фикстура для создания курьера и его удаление
 @pytest.fixture
+def register_new_courier(generate_login_data, courier_cleanup):
+
+    payload = generate_login_data
+
+    # отправляем запрос на регистрацию курьера и сохраняем ответ в переменную response
+    response = requests.post(Urls.CREATE_COURIER_ENDPOINT, data=payload)
+
+    courier_cleanup.update(payload)
+
+    return payload
+
+# фикстура для логина курьера и его удаление
+@pytest.fixture
 def register_new_courier_and_return_login_password(generate_login_data, courier_cleanup):
 
     payload = generate_login_data

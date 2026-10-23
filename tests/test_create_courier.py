@@ -21,15 +21,9 @@ class TestCreateCourier:
 
     @allure.title('Создание курьера с данными существующими в системе')
     @allure.description('Проверяем, что запрос отдает 409 и ошибку при создании курьера с данными как у существующего курьера в системе')
-    def test_create_two_idential_courier(self, generate_login_data):
-        with allure.step('Подготовка данных для создании курьера'):
-            payload = generate_login_data
-
-        with allure.step('Создание первого курьера'):   
-            response = requests.post(Urls.CREATE_COURIER_ENDPOINT, json=payload)
-            assert response.status_code == 201
-
+    def test_create_two_idential_courier(self, register_new_courier):
         with allure.step('Создание второго курьера с такими же данными как первый курьер'):
+            payload = register_new_courier
             response = requests.post(Urls.CREATE_COURIER_ENDPOINT, json=payload)
 
         with allure.step('Проверка, что курьер с данными, которые уже есть в системе, не создается'):  
