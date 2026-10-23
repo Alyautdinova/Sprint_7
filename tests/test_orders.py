@@ -3,32 +3,16 @@ import pytest
 import allure
 
 from data.urls import Urls
+from data.data_test import ORDER_PAYLOAD, ORDER_COLORS
 
 class TestOrders:
     @allure.title('Создание заказа')
     @allure.description('Проверяем, что создается заказ с одним цветом/с двумя и без цвета самоката')
-    @pytest.mark.parametrize("colors",
-        [
-            ["BLACK"],
-            ["GREY"],
-            ["BLACK"],
-            [],
-        ]
-    )
+    @pytest.mark.parametrize("colors", ORDER_COLORS)
     def test_create_order(self, colors):
 
         with allure.step('Подготовка данных для создания заказа'):
-            order_payload = {
-                "firstName": "Naruto",
-                "lastName": "Uchiha",
-                "address": "Konoha, 142 apt.",
-                "metroStation": 4,
-                "phone": "+7 800 355 35 35",
-                "rentTime": 5,
-                "deliveryDate": "2020-06-06",
-                "comment": "Saske, come back to Konoha",
-                "color": colors
-            }
+            order_payload = {**ORDER_PAYLOAD, "color": colors}
 
         with allure.step('Создание заказа'):
             response = requests.post(Urls.CREATE_ORDER_ENDPOINT, json=order_payload)
